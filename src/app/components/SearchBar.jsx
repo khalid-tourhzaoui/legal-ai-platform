@@ -1,4 +1,3 @@
-// src/components/SearchBar.jsx
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -40,19 +39,21 @@ export default function SearchBar() {
   return (
     <div className="w-full">
       <form onSubmit={handleSearch} className="flex items-center">
-        <div className="relative w-full">
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-            <svg className="w-4 h-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-            </svg>
-          </div>
+        <div className="relative w-full flex items-center">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-right pr-10 rounded-full w-full py-4 px-6 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-white border border-gray-300 text-gray-900 text-right rounded-full w-full py-4 px-6 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="اسألني أي سؤال عن القانون المغربي..."
           />
+          <button
+            type="submit"
+            className="absolute left-2 rounded-full border bg-green-800 hover:bg-white hover:border-green-800 text-white hover:text-green-800 px-6 py-2 font-bold cursor-pointer"
+            disabled={isLoading}
+          >
+            {isLoading ? 'جاري البحث...' : 'بحث'}
+          </button>
         </div>
       </form>
     </div>

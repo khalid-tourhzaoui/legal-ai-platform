@@ -103,16 +103,16 @@
 // }
 // src/app/page.js
 import Image from 'next/image';
-import SearchBar from '@/components/SearchBar';
-import FrequentQuestions from '@/components/FrequentQuestions';
-import DonateButton from '@/components/DonateButton';
-import Footer from '@/components/Footer';
+import SearchBar from './components/SearchBar';
+import FrequentQuestions from './components/FrequentQuestions';
+import DonateButton from './components/DonateButton';
+import Footer from './components/Footer';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4">
+    <main className="flex min-h-screen flex-col items-center justify-between" style={{backgroundColor:'rgb(247, 247, 247)'}}>
       {/* Header with Moroccan star */}
-      <div className="w-full flex justify-center pt-2 pb-6">
+      <div className="w-full flex justify-center py-2 bg-red-600 border-1">
         <Image 
           src="/moroccan-star.svg" 
           alt="Moroccan Star" 
@@ -122,23 +122,18 @@ export default function Home() {
       </div>
       
       {/* Main title */}
-      <h1 className="text-5xl font-bold text-center text-gray-800 mb-8">
+      <h1 className="text-5xl font-bold text-center text-gray-800 my-8">
         القانون المغربي
       </h1>
       
       {/* Search Bar */}
       <div className="w-full max-w-2xl mb-16">
-        {/* <SearchBar /> */}
-      </div>
-      
-      {/* Donate Button */}
-      <div className="w-full max-w-2xl mb-16">
-        {/* <DonateButton /> */}
+        <SearchBar />
       </div>
       
       {/* Frequent Questions */}
       <div className="w-full max-w-4xl mb-16">
-        {/* <FrequentQuestions /> */}
+        <FrequentQuestions />
       </div>
       
       {/* Footer */}
