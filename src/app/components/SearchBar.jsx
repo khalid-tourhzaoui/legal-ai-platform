@@ -2,8 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function SearchBar({ query, onQueryChange }) {
-  // const [query, setQuery] = useState(query || '');
+export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -15,10 +14,6 @@ export default function SearchBar({ query, onQueryChange }) {
     setIsLoading(true);
     
     try {
-      // Redirection vers page de résultats ou traitement direct
-      // router.push(`/search?q=${encodeURIComponent(query)}`);
-      
-      // Ou traitement API directement ici
       const response = await fetch('/api/ask', {
         method: 'POST',
         headers: {
@@ -27,7 +22,19 @@ export default function SearchBar({ query, onQueryChange }) {
         body: JSON.stringify({ question: query }),
       });
       
-      // Traitement de la réponse...
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Appeler le callback avec les résultats
+        if (onSearchComplete) {
+          onSearchComplete({
+            question: query,
+            answer: data.answer
+          });
+        }
+      } else {
+        console.error('API Error:', data.error);
+      }
       
     } catch (error) {
       console.error('Error searching:', error);
