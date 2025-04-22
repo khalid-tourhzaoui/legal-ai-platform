@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-export default function FrequentQuestions() {
+export default function FrequentQuestions({ onQuestionClick }) {
   const [expanded, setExpanded] = useState(false);
   
   const questions = [
@@ -17,7 +17,6 @@ export default function FrequentQuestions() {
     setExpanded(!expanded);
   };
 
-  // Crée des paires de questions pour l'affichage en deux colonnes
   const createQuestionPairs = () => {
     const pairs = [];
     for (let i = 0; i < questions.length; i += 2) {
@@ -44,6 +43,7 @@ export default function FrequentQuestions() {
                 key={index}
                 className="bg-gray-100 text-gray-700 rounded-full py-3 px-6 text-right cursor-pointer hover:bg-gray-200 transition-colors"
                 dir="rtl"
+                onClick={() => onQuestionClick(question)}
               >
                 {question}
               </div>

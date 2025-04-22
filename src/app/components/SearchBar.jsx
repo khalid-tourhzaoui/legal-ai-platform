@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function SearchBar() {
-  const [query, setQuery] = useState('');
+export default function SearchBar({ query, onQueryChange }) {
+  // const [query, setQuery] = useState(query || '');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -43,7 +43,7 @@ export default function SearchBar() {
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => onQueryChange(e.target.value)}
             className="bg-white border border-gray-300 text-gray-900 text-right rounded-full w-full py-4 px-6 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="اسألني أي سؤال عن القانون المغربي..."
           />
