@@ -6,8 +6,9 @@ import FrequentQuestions from "./components/FrequentQuestions";
 import Footer from "./components/Footer";
 import SearchResults from "./components/SearchResults";
 import { useState } from "react";
-
+import { useTranslation } from '@/hooks/useTranslation'
 export default function Home() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<{
     question: string;
@@ -119,7 +120,7 @@ export default function Home() {
             />
           </div>
         )}
-
+         <h1>{t('welcome_message')}</h1>
         {/* Frequent Questions - seulement visibles si showFrequentQuestions est true */}
         {showFrequentQuestions && (
           <div className="w-full max-w-5xl mb-16">

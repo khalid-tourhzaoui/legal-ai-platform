@@ -1,22 +1,41 @@
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+'use client'
 
-const LanguageSwitcher = () => {
-  const { locale, asPath } = useRouter();
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
 
+export default function LanguageSwitcher() {
+  const router = useRouter()
+  const [currentLang, setCurrentLang] = useState('fr')
+  
+  useEffect(() => {
+    // Récupérer la langue des cookies au chargement
+    const savedLang = Cookies.get('NEXT_LOCALE') || 'fr'
+    setCurrentLang(savedLang)
+  }, [])
+  
+  const switchLanguage = (lang) => {
+    Cookies.set('NEXT_LOCALE', lang)
+    setCurrentLang(lang)
+    
+    // Recharger la page pour appliquer le changement
+    router.refresh()
+  }
+  
   return (
-    <div className="flex gap-2">
-      <Link href={asPath} locale="fr">
-        <a className={locale === 'fr' ? 'font-bold' : ''}>FR</a>
-      </Link>
-      <Link href={asPath} locale="ar">
-        <a className={locale === 'ar' ? 'font-bold' : ''}>AR</a>
-      </Link>
-      <Link href={asPath} locale="en">
-        <a className={locale === 'en' ? 'font-bold' : ''}>EN</a>
-      </Link>
+    <div>
+      <button 
+        onClick={() => switchLanguage('fr')}
+        className={currentLang === 'fr' ? 'active' : ''}
+      >
+        Français
+      </button>
+      <button 
+        onClick={() => switchLanguage('en')}
+        className={currentLang === 'en' ? 'active' : ''}
+      >
+        English
+      </button>
     </div>
-  );
-};
-
-export default LanguageSwitcher;
+  )
+}
