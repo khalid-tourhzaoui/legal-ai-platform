@@ -12,30 +12,25 @@ export function useTranslation() {
     setLocale(currentLocale)
     
     // Charger les traductions
-    fetch(`/locales/${currentLocale}/common.json`)
-      .then(res => res.json())
-      .then(data => {
-        setTranslations(data)
-      })
-      .catch(err => {
-        console.error('Error loading translations:', err)
-      })
+    loadTranslations(currentLocale)
   }, [])
   
-  const changeLanguage = (newLocale) => {
+  const loadTranslations = async (locale) => {
+    try {
+      const response = await fetch(`/locales/${locale}/common.json`)
+      const data = await response.json()
+      setTranslations(data)
+    } catch (err) {
+      console.error('Error loading translations:', err)
+    }
+  }
+  
+  const changeLanguage = async (newLocale) => {
     localStorage.setItem('NEXT_LOCALE', newLocale)
     setLocale(newLocale)
     
-    // Charger les nouvelles traductions
-    fetch(`/locales/${newLocale}/common.json`)
-      .then(res => res.json())
-      .then(data => {
-        setTranslations(data)
-        window.location.reload() // Recharger pour appliquer les changements
-      })
-      .catch(err => {
-        console.error('Error loading translations:', err)
-      })
+    // Charger les nouvelles traductions sans recharger la page
+    await loadTranslations(newLocale)
   }
   
   const t = (key) => {
