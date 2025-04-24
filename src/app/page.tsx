@@ -14,6 +14,7 @@ export default function Home() {
     answer: string;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showFrequentQuestions, setShowFrequentQuestions] = useState(true);
 
   const handleQuestionClick = (question: string) => {
     setSearchQuery(question);
@@ -23,10 +24,10 @@ export default function Home() {
   const handleSearch = async (question?: string) => {
     const query = question || searchQuery;
     if (!query.trim()) return;
-
+  
     setIsLoading(true);
     setSearchResults(null);
-
+  
     try {
       const response = await fetch("/api/ask", {
         method: "POST",
@@ -35,20 +36,45 @@ export default function Home() {
         },
         body: JSON.stringify({ question: query }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         setSearchResults({
           question: query,
-          answer: data.answer,
+          // Utilise la réponse de l'API ou une valeur par défaut si elle est vide
+          answer: data.answer || "Aucune réponse disponible pour cette question. Veuillez reformuler votre demande ou consulter nos FAQ.",
         });
+        // Cacher les questions fréquentes après une recherche réussie
+        setShowFrequentQuestions(false);
+      } else {
+        // Ajouter une réponse par défaut en cas d'erreur
+        setSearchResults({
+          question: query,
+          answer: "Désolé, nous n'avons pas pu traiter votre demande. Veuillez réessayer ultérieurement.",
+        });
+        // Cacher les questions fréquentes même en cas d'erreur
+        setShowFrequentQuestions(false);
       }
     } catch (error) {
       console.error("Error searching:", error);
+      // Ajouter une réponse par défaut en cas d'exception
+      setSearchResults({
+        question: query,
+        answer: "Une erreur s'est produite lors de la recherche. Veuillez vérifier votre connexion et réessayer.",
+      });
+      // Cacher les questions fréquentes même en cas d'exception
+      setShowFrequentQuestions(false);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Fonction pour réinitialiser la page à l'état initial
+  const handleReset = () => {
+    setSearchQuery("");
+    setSearchResults(null);
+    setShowFrequentQuestions(true);
   };
 
   return (
@@ -63,6 +89,8 @@ export default function Home() {
           alt="Moroccan Star"
           width={42}
           height={42}
+          onClick={handleReset} // Permettre de réinitialiser en cliquant sur le logo
+          className="cursor-pointer"
         />
       </div>
 
@@ -84,7 +112,7 @@ export default function Home() {
 
         {/* Search Results */}
         {searchResults && (
-          <div className="w-full max-w-5xl mb-8">
+          <div className="w-full max-w-5xl mb-8 rtl">
             <SearchResults
               question={searchResults.question}
               answer={searchResults.answer}
@@ -92,10 +120,12 @@ export default function Home() {
           </div>
         )}
 
-        {/* Frequent Questions */}
-        <div className="w-full max-w-5xl mb-16">
-          <FrequentQuestions onQuestionClick={handleQuestionClick} />
-        </div>
+        {/* Frequent Questions - seulement visibles si showFrequentQuestions est true */}
+        {showFrequentQuestions && (
+          <div className="w-full max-w-5xl mb-16">
+            <FrequentQuestions onQuestionClick={handleQuestionClick} />
+          </div>
+        )}
       </div>
       
       {/* Footer component is now fixed */}

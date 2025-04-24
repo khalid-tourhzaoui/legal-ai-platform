@@ -28,7 +28,7 @@ export default function FrequentQuestions({ onQuestionClick }) {
   const questionPairs = createQuestionPairs();
 
   return (
-    <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
+    <div className="bg-white rounded-3xl border border-gray-100 p-2 shadow-sm mx-2">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-light text-gray-500 text-center w-full">
           أسئلة يتكرر طرحها

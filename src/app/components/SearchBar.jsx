@@ -51,7 +51,7 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete}) {
             type="text"
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
-            className="bg-white border border-gray-300 text-gray-900 text-right rounded-full w-full py-4 px-6 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-white border border-gray-300 text-gray-900 text-right rounded-full w-full py-4 px-6 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-800"
             placeholder="اسألني أي سؤال عن القانون المغربي..."
           />
           <button
