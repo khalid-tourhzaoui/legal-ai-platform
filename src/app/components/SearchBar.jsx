@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
+export default function SearchBar({ query, onQueryChange, onSearchComplete}) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -33,11 +33,11 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
           });
         }
       } else {
-        console.error('API Error:', data.error);
+        console.error('API Error:');
       }
       
     } catch (error) {
-      console.error('Error searching:', error);
+      console.error('Error searching:');
     } finally {
       setIsLoading(false);
     }
