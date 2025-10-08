@@ -11,7 +11,17 @@ export async function POST(request) {
       );
     }
 
-    // Configuration pour l'API Groq avec Qwen 3-32B - Réponses en arabe uniquement
+    // Vérifier que la clé API existe
+    if (!process.env.GROQ_API_KEY) {
+      console.error('GROQ_API_KEY is not configured');
+      return NextResponse.json({
+        answer: "خطأ في الإعداد: مفتاح API غير متوفر. يرجى التواصل مع المسؤول.",
+        question,
+        isError: true,
+        errorType: 'config_error'
+      }, { status: 200 });
+    }
+
     const payload = {
       messages: [
         {
@@ -40,13 +50,15 @@ export async function POST(request) {
           content: question
         }
       ],
-      model: 'llama3-70b-8192',
+      model: 'llama-3.3-70b-versatile', // Modèle correct et disponible
       max_tokens: 2000,
-      temperature: 0.1, // أقل للحصول على إجابات أكثر اتساقاً
-      top_p: 0.8,
+      temperature: 0.3,
+      top_p: 0.9,
       stream: false,
-      stop: ["<think>", "think", "Let me", "Okay"], // منع الكلمات غير المرغوبة
+      stop: ["<think>", "Think", "THINK"]
     };
+
+    console.log('Calling Groq API with model:', payload.model);
 
     try {
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -58,65 +70,102 @@ export async function POST(request) {
         body: JSON.stringify(payload)
       });
 
+      // Log détaillé pour le débogage
+      console.log('Groq API Response Status:', response.status);
+      
       if (!response.ok) {
-        console.error(`Groq API request failed with status ${response.status}`);
         const errorText = await response.text();
-        console.error('Error details:', errorText);
+        console.error('Groq API Error Response:', errorText);
         
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { message: errorText };
+        }
+
+        // Messages d'erreur spécifiques
+        if (response.status === 401) {
+          return NextResponse.json({
+            answer: "خطأ في المصادقة: مفتاح API غير صالح. يرجى التحقق من الإعدادات.",
+            question,
+            isError: true,
+            errorType: 'auth_error',
+            debug: errorData.error?.message || 'Authentication failed'
+          }, { status: 200 });
+        }
+
+        if (response.status === 429) {
+          return NextResponse.json({
+            answer: "تم تجاوز الحد المسموح من الطلبات. يرجى الانتظار قليلاً والمحاولة مرة أخرى.",
+            question,
+            isError: true,
+            errorType: 'rate_limit'
+          }, { status: 200 });
+        }
+
+        if (response.status === 400) {
+          return NextResponse.json({
+            answer: "خطأ في تنسيق الطلب. يرجى إعادة صياغة السؤال.",
+            question,
+            isError: true,
+            errorType: 'bad_request',
+            debug: errorData.error?.message || 'Bad request'
+          }, { status: 200 });
+        }
+
         return NextResponse.json({
-          answer: "عذرًا، لم نتمكن من معالجة طلبك في الوقت الحالي. الخدمة مؤقتًا غير متاحة. يرجى المحاولة مرة أخرى لاحقًا.",
+          answer: "عذرًا، لم نتمكن من معالجة طلبك في الوقت الحالي. يرجى المحاولة مرة أخرى لاحقًا.",
           question,
           isError: true,
-          errorType: 'api_error'
+          errorType: 'api_error',
+          debug: `Status: ${response.status}, Message: ${errorData.error?.message || 'Unknown error'}`
         }, { status: 200 });
       }
 
       const data = await response.json();
+      console.log('Groq API Success:', {
+        model: data.model,
+        usage: data.usage
+      });
+
       let rawAnswer = data.choices?.[0]?.message?.content || "لم يتم العثور على إجابة مناسبة لهذا السؤال.";
       
-      // إزالة النص بين <think> و </think>
+      // Nettoyer la réponse
       const cleanAnswer = (text) => {
-        // إزالة كل شيء من <think> إلى </think>
-        const cleanedText = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
-        // إزالة أي نص يبدأ بـ <think> حتى نهاية السطر إذا لم يكن هناك closing tag
-        const finalText = cleanedText.replace(/<think>.*$/gmi, '');
-        // إزالة المسافات الفارغة في البداية والنهاية
-        return finalText.trim();
+        let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+        cleaned = cleaned.replace(/<think>.*$/gmi, '');
+        return cleaned.trim();
       };
       
       const answer = cleanAnswer(rawAnswer);
-
-      // Informations supplémentaires de Groq
       const usage = data.usage || {};
       
       return NextResponse.json({
         answer,
         question,
-        model: 'qwen-32b-preview',
+        model: data.model || 'llama-3.3-70b',
         provider: 'groq',
         tokens_used: usage.total_tokens || 0,
         prompt_tokens: usage.prompt_tokens || 0,
-        completion_tokens: usage.completion_tokens || 0,
-        response_time: data.created ? new Date().getTime() - data.created * 1000 : null
+        completion_tokens: usage.completion_tokens || 0
       });
 
     } catch (apiError) {
-      console.error('Groq API call error:', apiError);
+      console.error('Groq API call exception:', apiError);
       
-      // Gestion spécifique des erreurs Groq - Messages en arabe
       let errorMessage = "عذرًا، حدث خطأ أثناء الاتصال بخدمة المعلومات القانونية.";
 
-      if (apiError.message.includes('rate limit')) {
-        errorMessage = "تم تجاوز الحد المسموح من الطلبات. يرجى الانتظار قليلاً والمحاولة مرة أخرى.";
-      } else if (apiError.message.includes('quota')) {
-        errorMessage = "تم استنفاد الكوتا المتاحة. يرجى المحاولة لاحقًا.";
+      if (apiError.message?.includes('fetch')) {
+        errorMessage = "خطأ في الاتصال بالخدمة. يرجى التحقق من اتصالك بالإنترنت.";
       }
 
       return NextResponse.json({
         answer: errorMessage,
         question,
         isError: true,
-        errorType: 'connection_error'
+        errorType: 'connection_error',
+        debug: apiError.message
       }, { status: 200 });
     }
 
@@ -126,7 +175,8 @@ export async function POST(request) {
       answer: "حدث خطأ غير متوقع. يرجى التحقق من طلبك والمحاولة مرة أخرى.",
       question: "",
       isError: true,
-      errorType: 'processing_error'
+      errorType: 'processing_error',
+      debug: error.message
     }, { status: 200 });
   }
 }
