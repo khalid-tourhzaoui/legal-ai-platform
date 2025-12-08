@@ -1,5 +1,5 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 
 export default function FrequentQuestions({ onQuestionClick }) {
   const [expanded, setExpanded] = useState(false);
@@ -9,137 +9,171 @@ export default function FrequentQuestions({ onQuestionClick }) {
     {
       text: "ما هي العقوبات القانونية لانتحال شخصية شخص آخر؟",
       category: "جنائي",
-      icon: "⚖️"
+      icon: "⚖️",
+      gradient: "from-red-500 via-pink-500 to-rose-500",
     },
     {
       text: "متى وكيف يجب على الموظف إبلاغ الشركة عن استقالته؟",
       category: "عمل",
-      icon: "💼"
+      icon: "💼",
+      gradient: "from-blue-500 via-cyan-500 to-sky-500",
     },
     {
       text: "ما هي العواقب القانونية لعدم تجديد البطاقة الوطنية للهوية؟",
       category: "إداري",
-      icon: "🆔"
+      icon: "🆔",
+      gradient: "from-green-500 via-emerald-500 to-teal-500",
     },
     {
       text: "ما هي الشروط والأحكام القانونية لزواج القاصرين في المغرب؟",
       category: "أسرة",
-      icon: "👨‍👩‍👧‍👦"
+      icon: "👨‍👩‍👧‍👦",
+      gradient: "from-purple-500 via-violet-500 to-fuchsia-500",
     },
     {
       text: "ما هي التداعيات القانونية والعقوبات على ارتكاب جريمة القتل العمد؟",
       category: "جنائي",
-      icon: "⚖️"
+      icon: "⚖️",
+      gradient: "from-red-600 via-orange-500 to-amber-500",
     },
     {
       text: "ما هي الشروط والمقتضيات للكراء اليومي للممتلكات في المغرب؟",
       category: "عقاري",
-      icon: "🏠"
+      icon: "🏠",
+      gradient: "from-orange-500 via-amber-500 to-yellow-500",
     },
     {
       text: "كيفية تقديم شكوى ضد موظف عمومي؟",
       category: "إداري",
-      icon: "📋"
+      icon: "📋",
+      gradient: "from-teal-500 via-cyan-500 to-blue-500",
     },
     {
       text: "ما هي حقوق المستهلك في المغرب؟",
       category: "تجاري",
-      icon: "🛒"
-    }
+      icon: "🛒",
+      gradient: "from-yellow-500 via-lime-500 to-green-500",
+    },
   ];
-
-  const toggleExpand = () => {
-    setExpanded(!expanded);
-  };
-
-  const getCategoryColor = (category) => {
-    const colors = {
-      "جنائي": "bg-red-100 text-red-800 border-red-200",
-      "عمل": "bg-blue-100 text-blue-800 border-blue-200",
-      "إداري": "bg-green-100 text-green-800 border-green-200",
-      "أسرة": "bg-purple-100 text-purple-800 border-purple-200",
-      "عقاري": "bg-orange-100 text-orange-800 border-orange-200",
-      "تجاري": "bg-yellow-100 text-yellow-800 border-yellow-200"
-    };
-    return colors[category] || "bg-gray-100 text-gray-800 border-gray-200";
-  };
 
   const displayedQuestions = expanded ? questions : questions.slice(0, 6);
 
   return (
-    <div className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-      {/* En-tête */}
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-3">
-          <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
-          <h2 className="text-3xl font-bold text-gray-800">
-            أسئلة يتكرر طرحها
-          </h2>
-          <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
-            {questions.length} سؤال
-          </span>
-        </div>
-      </div>
-
-      {/* Grille des questions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        {displayedQuestions.map((question, index) => (
-          <div
-            key={index}
-            className={`group relative bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 rounded-2xl p-4 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:border-green-300 ${
-              hoveredQuestion === index ? 'ring-2 ring-green-200' : ''
-            }`}
-            onClick={() => onQuestionClick(question.text)}
-            onMouseEnter={() => setHoveredQuestion(index)}
-            onMouseLeave={() => setHoveredQuestion(null)}
-            dir="rtl"
-          >
-            {/* Badge de catégorie */}
-            <div className="flex justify-between items-start mb-3">
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full border ${getCategoryColor(question.category)}`}>
-                {question.category}
-              </span>
-              <span className="text-xl opacity-70 group-hover:opacity-100 transition-opacity duration-200">
-                {question.icon}
-              </span>
+    <div className="relative group">
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-[2.5rem] blur-2xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+      
+      <div className="relative bg-white/10 backdrop-blur-2xl rounded-[2.5rem] border-2 border-white/20 p-10 shadow-2xl hover:bg-white/15 transition-all duration-500">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="w-5 h-5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 animate-pulse shadow-lg"></div>
+              <div className="absolute inset-0 w-5 h-5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400 animate-ping opacity-75"></div>
             </div>
+            <h2 className="text-4xl md:text-5xl font-black text-white">
+              أسئلة متكررة
+            </h2>
+          </div>
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-xl opacity-75 group-hover:opacity-100 transition-opacity"></div>
+            <span className="relative bg-gradient-to-r from-blue-500 to-purple-500 text-white text-lg font-black px-6 py-3 rounded-full shadow-xl transform group-hover:scale-110 transition-all duration-300 inline-block">
+              {questions.length} سؤال
+            </span>
+          </div>
+        </div>
 
-            {/* Texte de la question */}
-            <p className="text-gray-700 text-sm leading-relaxed group-hover:text-gray-900 transition-colors duration-200">
-              {question.text}
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+          {displayedQuestions.map((question, index) => (
+            <div
+              key={index}
+              className="group/card relative"
+              onClick={() => onQuestionClick(question.text)}
+              onMouseEnter={() => setHoveredQuestion(index)}
+              onMouseLeave={() => setHoveredQuestion(null)}
+              dir="rtl"
+            >
+              <div className={`absolute inset-0 bg-gradient-to-r ${question.gradient} rounded-3xl blur-xl opacity-0 group-hover/card:opacity-50 transition-all duration-500`}></div>
+              
+              <div
+                className={`relative bg-white/10 backdrop-blur-xl border-2 rounded-3xl p-6 cursor-pointer transition-all duration-500 transform ${
+                  hoveredQuestion === index
+                    ? "scale-105 rotate-2 shadow-2xl border-white/40 bg-white/20"
+                    : "shadow-lg border-white/20 hover:shadow-xl"
+                }`}
+              >
+                <div className="flex justify-between items-start mb-5">
+                  <div className="relative group/badge">
+                    <div className={`absolute inset-0 bg-gradient-to-r ${question.gradient} rounded-full blur-md opacity-75 group-hover/badge:opacity-100 transition-opacity`}></div>
+                    <span
+                      className={`relative text-xs font-black px-4 py-2 rounded-full bg-gradient-to-r ${question.gradient} text-white shadow-lg`}
+                    >
+                      {question.category}
+                    </span>
+                  </div>
+                  <span className="text-3xl transform group-hover/card:scale-125 group-hover/card:rotate-12 transition-all duration-500">
+                    {question.icon}
+                  </span>
+                </div>
 
-            {/* Indicateur de clic */}
-            <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+                <p className="text-white text-base leading-relaxed font-medium group-hover/card:text-cyan-100 transition-colors duration-300">
+                  {question.text}
+                </p>
+
+                <div className="absolute bottom-4 left-4 opacity-0 group-hover/card:opacity-100 transition-all duration-500 transform group-hover/card:scale-110">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full blur-lg opacity-75"></div>
+                    <div className="relative w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center shadow-xl">
+                      <svg
+                        className="w-6 h-6 text-white transform group-hover/card:translate-x-1 transition-transform duration-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover/card:opacity-100 transform -skew-x-12 group-hover/card:translate-x-full transition-all duration-1000 rounded-3xl pointer-events-none"></div>
               </div>
             </div>
+          ))}
+        </div>
 
-            {/* Effet de brillance au survol */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 group-hover:translate-x-full transition-all duration-700 rounded-2xl"></div>
-          </div>
-        ))}
-      </div>
-
-      {/* Bouton d'expansion */}
-      <div className="flex justify-center">
-        <button
-          onClick={toggleExpand}
-          className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-        >
-          <span>{expanded ? 'عرض أقل' : 'عرض المزيد'}</span>
-          <svg 
-            className={`w-4 h-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
+        <div className="flex justify-center">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpanded(!expanded);
+            }}
+            className="group/btn relative"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl blur-xl opacity-75 group-hover/btn:opacity-100 transition-opacity"></div>
+            <div className="relative flex items-center gap-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white px-10 py-5 rounded-2xl font-black text-lg transition-all duration-500 transform group-hover/btn:scale-110 group-hover/btn:rotate-2 shadow-xl">
+              <span>{expanded ? "عرض أقل" : "عرض المزيد"}</span>
+              <svg
+                className={`w-6 h-6 transition-transform duration-500 ${
+                  expanded ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={3}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   );

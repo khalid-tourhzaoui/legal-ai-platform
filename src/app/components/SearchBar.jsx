@@ -1,71 +1,91 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 
 export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    
+  const handleSearch = async () => {
     if (!query.trim()) return;
-    
     setIsLoading(true);
-    
     try {
-      // Appeler directement la fonction de recherche du parent
       if (onSearchComplete) {
         await onSearchComplete();
       }
     } catch (error) {
-      console.error('Error in search:', error);
+      console.error("Error in search:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+
   return (
     <div className="w-full">
-      <form onSubmit={handleSearch} className="flex items-center">
-        <div className="relative w-full flex items-center group">
+      <div className="relative group">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-3xl blur-2xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
+        
+        <div className="relative flex items-center">
           <input
             type="text"
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
-            className="bg-white border-2 border-gray-200 text-gray-900 text-right rounded-full w-full py-4 px-6 pr-6 pl-32 shadow-lg focus:outline-none focus:ring-4 focus:ring-green-200 focus:border-green-500 transition-all duration-300 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            onKeyPress={handleKeyPress}
+            className="w-full bg-white/10 backdrop-blur-2xl border-2 border-white/20 text-white text-right rounded-3xl py-6 px-10 pr-10 pl-48 text-lg shadow-2xl focus:outline-none focus:ring-4 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-500 placeholder-cyan-200/50 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/15 hover:border-white/30"
             placeholder="اسألني أي سؤال عن القانون المغربي..."
             disabled={isLoading}
             dir="rtl"
           />
-          
+
           <button
-            type="submit"
-            className={`absolute left-2 rounded-full border-2 px-6 py-2 font-bold cursor-pointer transition-all duration-300 transform ${
+            onClick={handleSearch}
+            className={`absolute left-3 rounded-2xl px-10 py-4 font-black text-lg transition-all duration-500 ${
               isLoading
-                ? 'bg-gray-400 border-gray-400 text-white cursor-not-allowed'
-                : 'bg-green-800 border-green-800 text-white hover:bg-white hover:border-green-800 hover:text-green-800 hover:scale-105 shadow-md hover:shadow-lg'
+                ? "bg-gray-500/50 text-white/50 cursor-not-allowed"
+                : "bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white hover:from-cyan-600 hover:via-blue-600 hover:to-purple-600 hover:scale-110 hover:rotate-2 shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
             }`}
             disabled={isLoading || !query.trim()}
           >
             {isLoading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>جاري البحث...</span>
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>جاري البحث</span>
               </div>
             ) : (
-              'بحث'
+              <div className="flex items-center gap-3">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+                <span>بحث</span>
+              </div>
             )}
           </button>
         </div>
-      </form>
-      
-      {/* Indicateur de progression */}
+      </div>
+
       {isLoading && (
-        <div className="mt-3">
-          <div className="w-full bg-gray-200 rounded-full h-1 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-green-500 to-green-700 rounded-full animate-pulse"></div>
+        <div className="mt-6 space-y-3">
+          <div className="relative w-full bg-white/10 backdrop-blur-xl rounded-full h-3 overflow-hidden border border-white/20">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
           </div>
-          <p className="text-sm text-gray-500 text-center mt-2 animate-pulse">
-            معالجة السؤال بواسطة الذكاء الاصطناعي...
+          <p className="text-center text-cyan-200 font-medium animate-pulse">
+            معالجة الاستفسار بواسطة الذكاء الاصطناعي المتقدم
           </p>
         </div>
       )}
