@@ -2,7 +2,6 @@
 
 Bienvenue sur la **Legal AI Morocco Platform** ! Cette plateforme juridique innovante utilise l'API OpenAI pour fournir des informations et analyses juridiques précises adaptées au contexte marocain. Construite avec **Next.js**, notre plateforme est rapide, intuitive et personnalisable pour tous vos besoins juridiques.
 
-![Legal AI Morocco Banner](public/image.png)
 
 ## **🌐 Visitez la plateforme:** [Legal AI Morocco](https://legal-ai-morocco.vercel.app/)
 
