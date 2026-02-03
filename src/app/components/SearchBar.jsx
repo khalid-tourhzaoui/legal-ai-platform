@@ -3,14 +3,13 @@ import { useState } from "react";
 
 export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
     setIsLoading(true);
     try {
-      if (onSearchComplete) {
-        await onSearchComplete();
-      }
+      if (onSearchComplete) await onSearchComplete();
     } catch (error) {
       console.error("Error in search:", error);
     } finally {
@@ -19,7 +18,7 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSearch();
     }
@@ -27,39 +26,114 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
 
   return (
     <div className="w-full">
-      <div className="relative group">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-3xl blur-2xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
-        
-        <div className="relative flex items-center">
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="w-full bg-white/10 backdrop-blur-2xl border-2 border-white/20 text-white text-right rounded-3xl py-6 px-10 pr-10 pl-48 text-lg shadow-2xl focus:outline-none focus:ring-4 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all duration-500 placeholder-cyan-200/50 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/15 hover:border-white/30"
-            placeholder="اسألني أي سؤال عن القانون المغربي..."
-            disabled={isLoading}
-            dir="rtl"
-          />
+      {/* ── Main card shell ── */}
+      <div
+        className={`relative bg-white rounded-2xl sm:rounded-3xl border-[6px] border-zinc-800 overflow-hidden transition-all duration-300 ${
+          isFocused
+            ? "shadow-[10px_10px_0px_0px_rgba(0,0,0,0.5)]"
+            : "shadow-[8px_8px_0px_0px_rgba(0,0,0,0.4)]"
+        }`}
+      >
+        {/* Scanline overlay — same as SkillCard */}
+        <div
+          className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.04] z-0"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(0,0,0,0.5) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 4px)",
+          }}
+        />
 
+        {/* Corner pixel decorators */}
+        <div className="absolute -left-1.5 -top-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
+        <div className="absolute -right-1.5 -top-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
+        <div className="absolute -left-1.5 -bottom-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
+        <div className="absolute -right-1.5 -bottom-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
+
+        {/* ── Header bar ── */}
+        <div className="relative z-10 flex items-center gap-3 px-5 py-3.5 border-b-4 border-zinc-800 bg-yellow-100">
+          {/* Traffic-light dots */}
+          <span className="w-3.5 h-3.5 rounded-full bg-red-400 border-2 border-zinc-800 inline-block" />
+          <span className="w-3.5 h-3.5 rounded-full bg-yellow-400 border-2 border-zinc-800 inline-block" />
+          <span className="w-3.5 h-3.5 rounded-full bg-green-400 border-2 border-zinc-800 inline-block" />
+
+          <div className="ml-3 flex items-center gap-2">
+            <svg
+              className="w-5 h-5 text-orange-600"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+            </svg>
+            <span className="text-zinc-800 text-xs font-black uppercase tracking-wide">
+              استفسار قانوني
+            </span>
+          </div>
+
+          {/* Live badge — right-aligned */}
+          <div className="ml-auto flex items-center gap-1.5 bg-green-100 border-2 border-zinc-800 rounded-lg px-2.5 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-xs font-black text-green-700 uppercase">
+              متاح
+            </span>
+          </div>
+        </div>
+
+        {/* ── Input row ── */}
+        <div className="relative z-10 flex flex-col sm:flex-row gap-3 p-4 sm:p-5">
+          {/* Input wrapper */}
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+              onKeyPress={handleKeyPress}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              className="w-full bg-zinc-50 border-[3px] border-zinc-800 text-zinc-800 text-right rounded-xl py-4 px-4 text-base font-medium shadow-[inset_3px_3px_0px_0px_rgba(0,0,0,0.1)] focus:outline-none focus:border-orange-500 focus:shadow-[inset_3px_3px_0px_0px_rgba(251,146,60,0.15)] transition-all duration-300 placeholder-zinc-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              placeholder="اسألني أي سؤال عن القانون المغربي..."
+              disabled={isLoading}
+              dir="rtl"
+            />
+          </div>
+
+          {/* Search button — press-down style */}
           <button
             onClick={handleSearch}
-            className={`absolute left-3 rounded-2xl px-10 py-4 font-black text-lg transition-all duration-500 ${
-              isLoading
-                ? "bg-gray-500/50 text-white/50 cursor-not-allowed"
-                : "bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white hover:from-cyan-600 hover:via-blue-600 hover:to-purple-600 hover:scale-110 hover:rotate-2 shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:shadow-[0_0_50px_rgba(6,182,212,0.8)]"
-            }`}
             disabled={isLoading || !query.trim()}
+            className={`
+              relative group
+              flex items-center justify-center gap-2
+              px-6 py-4
+              text-sm font-black uppercase tracking-wide
+              rounded-xl
+              border-4 border-zinc-800
+              transition-all duration-150
+              ${
+                isLoading || !query.trim()
+                  ? "bg-zinc-300 text-zinc-500 cursor-not-allowed shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)]"
+                  : "bg-gradient-to-br from-orange-400 to-orange-500 text-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.5)] hover:translate-x-[3px] hover:translate-y-[3px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.5)] active:translate-x-[5px] active:translate-y-[5px]"
+              }
+            `}
           >
+            {/* Corner pixels on active button */}
+            {!(isLoading || !query.trim()) && (
+              <>
+                <div className="absolute -left-1 -top-1 w-2.5 h-2.5 bg-white/60 rounded-sm" />
+                <div className="absolute -right-1 -top-1 w-2.5 h-2.5 bg-white/60 rounded-sm" />
+                <div className="absolute -left-1 -bottom-1 w-2.5 h-2.5 bg-white/60 rounded-sm" />
+                <div className="absolute -right-1 -bottom-1 w-2.5 h-2.5 bg-white/60 rounded-sm" />
+              </>
+            )}
+
             {isLoading ? (
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>جاري البحث</span>
-              </div>
+              <>
+                <div className="w-4 h-4 border-[3px] border-zinc-400 border-t-zinc-600 rounded-full animate-spin" />
+                <span>بحث...</span>
+              </>
             ) : (
-              <div className="flex items-center gap-3">
+              <>
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 group-hover:scale-110 transition-transform duration-200"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -72,23 +146,45 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
                   />
                 </svg>
                 <span>بحث</span>
-              </div>
+              </>
             )}
           </button>
         </div>
+
+        {/* ── Loading progress bar (inside card) ── */}
+        {isLoading && (
+          <div className="relative z-10 px-4 sm:px-5 pb-4">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-black text-zinc-600 uppercase tracking-wide">
+                معالجة
+              </span>
+              <span className="text-xs font-bold text-zinc-500">•</span>
+              <span
+                className="text-xs font-bold text-orange-600 animate-pulse"
+              >
+                الذكاء الاصطناعي يعمل...
+              </span>
+            </div>
+
+            {/* Progress track */}
+            <div className="w-full h-3 bg-zinc-200 rounded-full border-2 border-zinc-800 overflow-hidden shadow-[inset_2px_2px_0px_0px_rgba(0,0,0,0.15)]">
+              <div className="h-full bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 rounded-full animate-pulse" />
+            </div>
+          </div>
+        )}
       </div>
 
-      {isLoading && (
-        <div className="mt-6 space-y-3">
-          <div className="relative w-full bg-white/10 backdrop-blur-xl rounded-full h-3 overflow-hidden border border-white/20">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 rounded-full animate-pulse"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
-          </div>
-          <p className="text-center text-cyan-200 font-medium animate-pulse">
-            معالجة الاستفسار بواسطة الذكاء الاصطناعي المتقدم
-          </p>
-        </div>
-      )}
+      {/* ── Hint chips below card ── */}
+      <div className="mt-4 flex flex-wrap justify-center gap-2">
+        {["قانون الأسرة", "قانون العمل", "قانون العقوبات"].map((chip) => (
+          <span
+            key={chip}
+            className="text-xs font-black text-zinc-600 bg-white/10 border-2 border-white/30 px-3 py-1 rounded-lg backdrop-blur-sm"
+          >
+            {chip}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
