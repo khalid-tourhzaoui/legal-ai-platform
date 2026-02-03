@@ -25,7 +25,7 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       {/* ── Main card shell ── */}
       <div
         className={`relative bg-white rounded-2xl sm:rounded-3xl border-[6px] border-zinc-800 overflow-hidden transition-all duration-300 ${
@@ -179,7 +179,7 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
         {["قانون الأسرة", "قانون العمل", "قانون العقوبات"].map((chip) => (
           <span
             key={chip}
-            className="text-xs font-black text-zinc-600 bg-white/10 border-2 border-white/30 px-3 py-1 rounded-lg backdrop-blur-sm"
+            className="text-xs font-black text-zinc-800 bg-orange-500 border-2 border-white/30 px-3 py-1 rounded-lg backdrop-blur-sm"
           >
             {chip}
           </span>
