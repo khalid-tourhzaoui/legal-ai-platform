@@ -1,7 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useState, KeyboardEvent, ChangeEvent } from "react";
 
-export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
+interface SearchBarProps {
+  query: string;
+  onQueryChange: (query: string) => void;
+  onSearchComplete: () => void;
+}
+
+export default function SearchBar({
+  query,
+  onQueryChange,
+  onSearchComplete,
+}: SearchBarProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -17,7 +27,7 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSearch();
@@ -25,8 +35,7 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
   };
 
   return (
-    <div className="w-full">
-      {/* ── Main card shell ── */}
+    <div className="w-full ">
       <div
         className={`relative bg-white rounded-2xl sm:rounded-3xl border-[6px] border-zinc-800 overflow-hidden transition-all duration-300 ${
           isFocused
@@ -34,7 +43,6 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
             : "shadow-[8px_8px_0px_0px_rgba(0,0,0,0.4)]"
         }`}
       >
-        {/* Scanline overlay — same as SkillCard */}
         <div
           className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.04] z-0"
           style={{
@@ -43,15 +51,12 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
           }}
         />
 
-        {/* Corner pixel decorators */}
         <div className="absolute -left-1.5 -top-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
         <div className="absolute -right-1.5 -top-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
         <div className="absolute -left-1.5 -bottom-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
         <div className="absolute -right-1.5 -bottom-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
 
-        {/* ── Header bar ── */}
         <div className="relative z-10 flex items-center gap-3 px-5 py-3.5 border-b-4 border-zinc-800 bg-yellow-100">
-          {/* Traffic-light dots */}
           <span className="w-3.5 h-3.5 rounded-full bg-red-400 border-2 border-zinc-800 inline-block" />
           <span className="w-3.5 h-3.5 rounded-full bg-yellow-400 border-2 border-zinc-800 inline-block" />
           <span className="w-3.5 h-3.5 rounded-full bg-green-400 border-2 border-zinc-800 inline-block" />
@@ -69,7 +74,6 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
             </span>
           </div>
 
-          {/* Live badge — right-aligned */}
           <div className="ml-auto flex items-center gap-1.5 bg-green-100 border-2 border-zinc-800 rounded-lg px-2.5 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
             <span className="text-xs font-black text-green-700 uppercase">
@@ -78,14 +82,14 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
           </div>
         </div>
 
-        {/* ── Input row ── */}
         <div className="relative z-10 flex flex-col sm:flex-row gap-3 p-4 sm:p-5">
-          {/* Input wrapper */}
           <div className="relative flex-1">
             <input
               type="text"
               value={query}
-              onChange={(e) => onQueryChange(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                onQueryChange(e.target.value)
+              }
               onKeyPress={handleKeyPress}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
@@ -96,7 +100,6 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
             />
           </div>
 
-          {/* Search button — press-down style */}
           <button
             onClick={handleSearch}
             disabled={isLoading || !query.trim()}
@@ -115,7 +118,6 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
               }
             `}
           >
-            {/* Corner pixels on active button */}
             {!(isLoading || !query.trim()) && (
               <>
                 <div className="absolute -left-1 -top-1 w-2.5 h-2.5 bg-white/60 rounded-sm" />
@@ -151,7 +153,6 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
           </button>
         </div>
 
-        {/* ── Loading progress bar (inside card) ── */}
         {isLoading && (
           <div className="relative z-10 px-4 sm:px-5 pb-4">
             <div className="flex items-center gap-3 mb-2">
@@ -159,14 +160,11 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
                 معالجة
               </span>
               <span className="text-xs font-bold text-zinc-500">•</span>
-              <span
-                className="text-xs font-bold text-orange-600 animate-pulse"
-              >
+              <span className="text-xs font-bold text-orange-600 animate-pulse">
                 الذكاء الاصطناعي يعمل...
               </span>
             </div>
 
-            {/* Progress track */}
             <div className="w-full h-3 bg-zinc-200 rounded-full border-2 border-zinc-800 overflow-hidden shadow-[inset_2px_2px_0px_0px_rgba(0,0,0,0.15)]">
               <div className="h-full bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 rounded-full animate-pulse" />
             </div>
@@ -174,12 +172,11 @@ export default function SearchBar({ query, onQueryChange, onSearchComplete }) {
         )}
       </div>
 
-      {/* ── Hint chips below card ── */}
       <div className="mt-4 flex flex-wrap justify-center gap-2">
         {["قانون الأسرة", "قانون العمل", "قانون العقوبات"].map((chip) => (
           <span
             key={chip}
-            className="text-xs font-black text-zinc-600 bg-white/10 border-2 border-white/30 px-3 py-1 rounded-lg backdrop-blur-sm"
+            className="text-xs font-black text-zinc-800 bg-orange-500 border-2 border-white/30 px-3 py-1 rounded-lg backdrop-blur-sm"
           >
             {chip}
           </span>

@@ -1,11 +1,25 @@
 "use client";
-import { useState } from "react";
+import { useState, MouseEvent } from "react";
 
-export default function FrequentQuestions({ onQuestionClick }) {
+interface FrequentQuestionsProps {
+  onQuestionClick: (question: string) => void;
+}
+
+interface QuestionItem {
+  text: string;
+  category: string;
+  icon: string;
+  accentBg: string;
+  accentBorder: string;
+  accentText: string;
+  chipBg: string;
+}
+
+export default function FrequentQuestions({ onQuestionClick }: FrequentQuestionsProps) {
   const [expanded, setExpanded] = useState(false);
-  const [hoveredQuestion, setHoveredQuestion] = useState(null);
+  const [hoveredQuestion, setHoveredQuestion] = useState<number | null>(null);
 
-  const questions = [
+  const questions: QuestionItem[] = [
     {
       text: "ما هي العقوبات القانونية لانتحال شخصية شخص آخر؟",
       category: "جنائي",
@@ -82,11 +96,14 @@ export default function FrequentQuestions({ onQuestionClick }) {
 
   const displayedQuestions = expanded ? questions : questions.slice(0, 6);
 
+  const handleExpandClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setExpanded(!expanded);
+  };
+
   return (
     <div className="w-full">
-      {/* ── Outer card shell ── */}
       <div className="relative bg-white rounded-2xl sm:rounded-3xl border-[6px] border-zinc-800 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.4)] overflow-hidden">
-        {/* Scanline overlay */}
         <div
           className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.04] z-0"
           style={{
@@ -95,15 +112,12 @@ export default function FrequentQuestions({ onQuestionClick }) {
           }}
         />
 
-        {/* Corner pixel decorators */}
         <div className="absolute -left-1.5 -top-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
         <div className="absolute -right-1.5 -top-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
         <div className="absolute -left-1.5 -bottom-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
         <div className="absolute -right-1.5 -bottom-1.5 w-4 h-4 bg-white/70 rounded-sm z-10" />
 
-        {/* ── Header bar ── */}
         <div className="relative z-10 flex items-center gap-3 px-5 py-3.5 border-b-4 border-zinc-800 bg-yellow-100">
-          {/* Traffic-light dots */}
           <span className="w-3.5 h-3.5 rounded-full bg-red-400 border-2 border-zinc-800 inline-block" />
           <span className="w-3.5 h-3.5 rounded-full bg-yellow-400 border-2 border-zinc-800 inline-block" />
           <span className="w-3.5 h-3.5 rounded-full bg-green-400 border-2 border-zinc-800 inline-block" />
@@ -115,7 +129,6 @@ export default function FrequentQuestions({ onQuestionClick }) {
             </span>
           </div>
 
-          {/* Question count badge */}
           <div className="ml-auto flex items-center gap-1.5 bg-orange-100 border-2 border-zinc-800 rounded-lg px-2.5 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]">
             <span className="text-xs font-black text-orange-700 uppercase">
               {questions.length} سؤال
@@ -123,7 +136,6 @@ export default function FrequentQuestions({ onQuestionClick }) {
           </div>
         </div>
 
-        {/* ── Questions grid ── */}
         <div className="relative z-10 p-4 sm:p-6 lg:p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {displayedQuestions.map((question, index) => {
@@ -147,7 +159,6 @@ export default function FrequentQuestions({ onQuestionClick }) {
                     }
                   `}
                 >
-                  {/* Corner pixels on hovered card */}
                   {isHovered && (
                     <>
                       <div className="absolute -left-1 -top-1 w-2.5 h-2.5 bg-yellow-300 rounded-sm z-10" />
@@ -157,7 +168,6 @@ export default function FrequentQuestions({ onQuestionClick }) {
                     </>
                   )}
 
-                  {/* Card scanline */}
                   <div
                     className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.03] rounded-lg"
                     style={{
@@ -167,9 +177,7 @@ export default function FrequentQuestions({ onQuestionClick }) {
                   />
 
                   <div className="relative z-10 p-4">
-                    {/* Top row: category chip + icon */}
                     <div className="flex items-center justify-between mb-3">
-                      {/* Category chip — press-down style */}
                       <span
                         className={`
                           inline-flex items-center
@@ -187,7 +195,6 @@ export default function FrequentQuestions({ onQuestionClick }) {
                         {question.category}
                       </span>
 
-                      {/* Emoji icon in bordered box */}
                       <div
                         className={`
                           flex items-center justify-center
@@ -204,12 +211,10 @@ export default function FrequentQuestions({ onQuestionClick }) {
                       </div>
                     </div>
 
-                    {/* Question text */}
                     <p className="text-zinc-700 text-sm font-medium leading-relaxed">
                       {question.text}
                     </p>
 
-                    {/* Bottom arrow indicator */}
                     <div
                       className={`mt-3 flex items-center justify-end gap-1.5 transition-all duration-300 ${
                         isHovered ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
@@ -238,13 +243,9 @@ export default function FrequentQuestions({ onQuestionClick }) {
             })}
           </div>
 
-          {/* ── Show More / Less button ── */}
           <div className="mt-6 flex justify-center">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setExpanded(!expanded);
-              }}
+              onClick={handleExpandClick}
               className="
                 relative group
                 flex items-center gap-3
@@ -261,7 +262,6 @@ export default function FrequentQuestions({ onQuestionClick }) {
                 transition-all duration-150
               "
             >
-              {/* Corner pixels */}
               <div className="absolute -left-1 -top-1 w-2.5 h-2.5 bg-white/60 rounded-sm" />
               <div className="absolute -right-1 -top-1 w-2.5 h-2.5 bg-white/60 rounded-sm" />
               <div className="absolute -left-1 -bottom-1 w-2.5 h-2.5 bg-white/60 rounded-sm" />
