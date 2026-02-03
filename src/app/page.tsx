@@ -113,7 +113,7 @@ export default function Home() {
             <SearchResults 
               question={searchResults.question} 
               answer={searchResults.answer} 
-              isError={searchResults.isError} 
+              isError={searchResults.isError ?? false} 
             />
             {searchResults.model && (
               <ModelBadge model={searchResults.model} tokens_used={searchResults.tokens_used} />
