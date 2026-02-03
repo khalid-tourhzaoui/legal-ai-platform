@@ -25,7 +25,7 @@ const HeroSection = () => {
           <span className="text-orange-500">المغربي</span>
         </h1>
 
-        <p className="text-sm sm:text-base lg:text-lg text-zinc-600 leading-relaxed max-w-2xl mb-6 font-medium" dir="rtl">
+        <p className="text-sm sm:text-base lg:text-lg text-zinc-100 leading-relaxed max-w-2xl mb-6 font-medium" dir="rtl">
           استشارات قانونية ذكية بتقنية الذكاء الاصطناعي المتطورة — اسأل أي سؤال قانوني وتلقّ إجابة دقيقة في ثوانٍ.
         </p>
 
